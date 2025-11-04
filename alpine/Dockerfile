@@ -21,5 +21,10 @@ RUN apk add --no-cache ca-certificates curl bash
 # Update the system certificate store
 RUN update-ca-certificates
 
+# NOTE: Docker COPY sources are relative to the build context (the directory
+# passed to `docker build`). Using `../LICENSE` attempts to access files
+# outside the build context and will fail. Expect to build from the
+# `base_images` directory so `LICENSE` is in the context root and use
+# `COPY LICENSE LICENSE` below.
 COPY LICENSE /LICENSE
 
