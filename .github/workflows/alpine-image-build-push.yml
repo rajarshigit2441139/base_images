@@ -18,7 +18,7 @@ on:
 
 jobs:
   build-test:
-    if: github.ref != 'refs/heads/main' ||  github.ref != 'refs/heads/workflow'  || github.event_name == 'workflow_dispatch'
+    if: github.ref != 'refs/heads/main' || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -40,7 +40,7 @@ jobs:
           arch: ${{ matrix.arch }}
           context: .
           dockerfile: alpine/Dockerfile
-          tag_prefix: ghcr.io/rajatshigit2441139/alpine-base
+          tag_prefix: ghcr.io/rajatshigit2441139/base_images/alpine
           push: "false"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -73,7 +73,7 @@ jobs:
           arch: ${{ matrix.arch }}
           context: .
           dockerfile: alpine/Dockerfile
-          tag_prefix: ghcr.io/rajatshigit2441139/alpine-base
+          tag_prefix: ghcr.io/rajatshigit2441139/base_images/alpine
           push: "true"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
