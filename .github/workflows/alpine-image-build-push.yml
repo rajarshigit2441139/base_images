@@ -27,7 +27,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Build-using-rajatshigit2441139-base_action
+      - name: Build-using-rajarshigit2441139-base_action
         id: shared
         uses: rajarshigit2441139/base_action/alpine_action@alpine_v1.0.3
         with:
@@ -36,7 +36,7 @@ jobs:
           arch: ${{ matrix.arch }}
           context: .
           dockerfile: alpine/Dockerfile
-          tag_prefix: ghcr.io/rajatshigit2441139/base_images/alpine
+          tag_prefix: ghcr.io/rajarshigit2441139/base_images/alpine
           push: "false"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -60,7 +60,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Push-using-rajatshigit2441139-base_action
+      - name: Push-using-rajarshigit2441139-base_action
         id: shared
         uses: rajarshigit2441139/base_action/alpine_action@alpine_v1.0.2
         with:
@@ -69,7 +69,7 @@ jobs:
           arch: ${{ matrix.arch }}
           context: .
           dockerfile: alpine/Dockerfile
-          tag_prefix: ghcr.io/rajatshigit2441139/base_images/alpine
+          tag_prefix: ghcr.io/rajarshigit2441139/base_images/alpine
           push: "true"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
