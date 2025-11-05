@@ -34,8 +34,8 @@ jobs:
           version: ${{ steps.shared.outputs.version }}
           base_name: node
           arch: ${{ matrix.arch }}
-          context: .
-          dockerfile: node/Dockerfile
+          context: node/
+          dockerfile: Dockerfile
           tag_prefix: ghcr.io/rajarshigit2441139/base_images/node
           push: "false"
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -67,8 +67,8 @@ jobs:
           version: ${{ steps.shared.outputs.version }}
           base_name: node
           arch: ${{ matrix.arch }}
-          context: .
-          dockerfile: node/Dockerfile
+          context: node
+          dockerfile: Dockerfile
           tag_prefix: ghcr.io/rajarshigit2441139/base_images/node
           push: "true"
           github_token: ${{ secrets.GITHUB_TOKEN }}
