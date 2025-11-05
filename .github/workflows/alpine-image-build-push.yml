@@ -62,7 +62,7 @@ jobs:
 
       - name: Push-using-rajarshigit2441139-base_action
         id: shared
-        uses: rajarshigit2441139/base_action/alpine_action@alpine_v1.0.2
+        uses: rajarshigit2441139/base_action/alpine_action@alpine_v1.0.3
         with:
           version: ${{ steps.shared.outputs.version }}
           base_name: alpine
@@ -89,7 +89,7 @@ jobs:
 
           sanitized_version=$(echo "${{ needs.release.outputs.version }}" | sed 's/:.*//')
           ci_build_no="${{ needs.release.outputs.ci_build_no }}"
-          tag_name="toab-alpine-${sanitized_version}-${ci_build_no}"
+          tag_name="alpine-${sanitized_version}-${ci_build_no}"
           tag_name_clean=$(echo "${tag_name}" | xargs)
 
           if git rev-parse "refs/tags/${tag_name_clean}" >/dev/null 2>&1; then
