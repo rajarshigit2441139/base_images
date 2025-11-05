@@ -2,13 +2,9 @@ name: Alpine Image Build and Push
 
 on:
   push:
-    branches:
-      - 'feature/*'
-      - 'release/*'
-      - 'hotfix/*'
-      - 'workflow'
-      - develop
-      - 'main'
+    paths:
+      - 'alpine/**'
+      - '.github/workflows/alpine-image-build-push.yml'
   workflow_dispatch:
     inputs:
       branch:
@@ -33,7 +29,7 @@ jobs:
 
       - name: Build-using-rajatshigit2441139-base_action
         id: shared
-        uses: rajarshigit2441139/base_action/alpine_action@alpine_v1.0.2
+        uses: rajarshigit2441139/base_action/alpine_action@alpine_v1.0.3
         with:
           version: ${{ steps.shared.outputs.version }}
           base_name: alpine
@@ -45,7 +41,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test image
-        run: docker run --rm ${{ steps.shared.outputs.tag_prefix }}-${{ matrix.arch }}:${{ steps.shared.outputs.version }}-${{ steps.shared.outputs.ci_build_no }}
+        run: docker run --rm ${{ steps.shared.outputs.tag_prefix }}-${{ steps.shared.outputs.version }}-${{ matrix.arch }}:${{ steps.shared.outputs.ci_build_no }}
 
   release:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'
