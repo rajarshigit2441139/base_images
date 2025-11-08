@@ -1,0 +1,102 @@
+name: node Image Build and Push
+
+on:
+  push:
+    paths:
+      - 'node/**'
+      - '.github/workflows/node-image-build-push.yml'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build manually'
+        required: false
+        default: 'main'
+
+jobs:
+  build-test:
+    if: github.ref != 'refs/heads/main' || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [arm64]
+    outputs:
+      version: ${{ steps.shared.outputs.version }}
+      ci_build_no: ${{ steps.shared.outputs.ci_build_no }}
+    steps:
+      - name: Code Check 
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Build-using-rajarshigit2441139-base_action
+        id: shared
+        uses: rajarshigit2441139/base_action/node_action@node_v1.0.4
+        with:
+          version: ${{ steps.shared.outputs.version }}
+          base_name: node
+          arch: ${{ matrix.arch }}
+          context: node/
+          dockerfile: Dockerfile
+          tag_prefix: ghcr.io/rajarshigit2441139/base_images/node
+          push: "false"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test image
+        run: docker run --rm ${{ steps.shared.outputs.tag_prefix }}-${{ steps.shared.outputs.version }}-${{ matrix.arch }}:${{ steps.shared.outputs.ci_build_no }}
+
+  release:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      matrix:
+        arch: [arm64]
+    outputs:
+      version: ${{ steps.shared.outputs.version }}
+      ci_build_no: ${{ steps.shared.outputs.ci_build_no }}
+    steps:
+      - name: Code Check
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Push-using-rajarshigit2441139-base_action
+        id: shared
+        uses: rajarshigit2441139/base_action/node_action@node_v1.0.4
+        with:
+          version: ${{ steps.shared.outputs.version }}
+          base_name: node
+          arch: ${{ matrix.arch }}
+          context: node
+          dockerfile: Dockerfile
+          tag_prefix: ghcr.io/rajarshigit2441139/base_images/node
+          push: "true"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  git-tag:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Create Git Tag and Push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git fetch --tags
+
+          sanitized_version=$(echo "${{ needs.release.outputs.version }}" | sed 's/:.*//')
+          ci_build_no="${{ needs.release.outputs.ci_build_no }}"
+          tag_name="node-${sanitized_version}-${ci_build_no}"
+          tag_name_clean=$(echo "${tag_name}" | xargs)
+
+          if git rev-parse "refs/tags/${tag_name_clean}" >/dev/null 2>&1; then
+            echo "Tag '${tag_name_clean}' already exists. Skipping tag creation."
+          else
+            echo "Creating new tag '${tag_name_clean}'..."
+            git tag -a "${tag_name_clean}" -m "Release ${tag_name_clean}"
+            git push origin "${tag_name_clean}"
+            echo "Tag '${tag_name_clean}' pushed successfully."
+          fi
