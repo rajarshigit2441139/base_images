@@ -29,7 +29,7 @@ jobs:
 
       - name: Build-using-rajarshigit2441139-base_action
         id: shared
-        uses: rajarshigit2441139/base_action/node_action@node_v1.0.4
+        uses: rajarshigit2441139/base_action/node_action@node_v1.0.5
         with:
           version: ${{ steps.shared.outputs.version }}
           base_name: node
@@ -62,7 +62,7 @@ jobs:
 
       - name: Push-using-rajarshigit2441139-base_action
         id: shared
-        uses: rajarshigit2441139/base_action/node_action@node_v1.0.4
+        uses: rajarshigit2441139/base_action/node_action@node_v1.0.5
         with:
           version: ${{ steps.shared.outputs.version }}
           base_name: node
