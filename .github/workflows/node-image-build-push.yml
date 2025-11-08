@@ -29,13 +29,13 @@ jobs:
 
       - name: Build-using-rajarshigit2441139-base_action
         id: shared
-        uses: rajarshigit2441139/base_action/node_action@node_v1.0.4
+        uses: rajarshigit2441139/base_action/node_action@node_v1.0.6
         with:
           version: ${{ steps.shared.outputs.version }}
           base_name: node
           arch: ${{ matrix.arch }}
-          context: node/
-          dockerfile: Dockerfile
+          context: .
+          dockerfile: node/Dockerfile
           tag_prefix: ghcr.io/rajarshigit2441139/base_images/node
           push: "false"
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -62,13 +62,13 @@ jobs:
 
       - name: Push-using-rajarshigit2441139-base_action
         id: shared
-        uses: rajarshigit2441139/base_action/node_action@node_v1.0.4
+        uses: rajarshigit2441139/base_action/node_action@node_v1.0.6
         with:
           version: ${{ steps.shared.outputs.version }}
           base_name: node
           arch: ${{ matrix.arch }}
-          context: node
-          dockerfile: Dockerfile
+          context: .
+          dockerfile: node/Dockerfile
           tag_prefix: ghcr.io/rajarshigit2441139/base_images/node
           push: "true"
           github_token: ${{ secrets.GITHUB_TOKEN }}
