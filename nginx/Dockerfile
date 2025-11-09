@@ -6,6 +6,9 @@ FROM nginx:1.29-alpine AS nginx-stage
 # Use the Alpine base image for ARM64 architecture
 FROM ghcr.io/rajarshigit2441139/base_images/alpine-3.22.0-arm64:23
 
+# Set Working DIR
+WORKDIR /usr/src/nginx
+
 # Copy Nginx binaries and configs from the nginx image
 COPY --from=nginx-stage /etc/nginx /etc/nginx
 COPY --from=nginx-stage /usr/sbin/nginx /usr/sbin/nginx
