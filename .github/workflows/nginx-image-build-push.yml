@@ -1,0 +1,91 @@
+name: Docker Image CI
+
+on:
+  push:
+    paths:
+      - 'nginx/**'
+      - '.github/workflows/nginx-image-build-push.yml'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build'
+        required: false
+        default: 'main'
+
+jobs:
+
+  build-test:
+    if: github.ref != 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: ['arm64']
+    outputs:
+      version: ${{ steps.shared.outputs.version }}
+      ci_build_no: ${{ steps.shared.outputs.ci_build_no }}
+    steps:
+      - id: checkout
+        uses: actions/checkout@v4
+
+      - id: shared
+        uses: rajarshigit2441139/base_action/nginx_action@nginx_v1.0.1
+        with:
+          arch: ${{ matrix.arch }}
+          context: .
+          dockerfile: nginx/Dockerfile
+          tag_prefix: ghcr.io/rajarshigit2441139/base_images/nginx
+          push: "false"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      matrix:
+        arch: ['arm64']
+    outputs:
+      version: ${{ steps.shared.outputs.version }}
+      ci_build_no: ${{ steps.shared.outputs.ci_build_no }}
+    steps:
+      - id: checkout
+        uses: actions/checkout@v4
+
+      - id: shared
+        uses: rajarshigit2441139/base_action/nginx_action@nginx_v1.0.1
+        with:
+          arch: ${{ matrix.arch }}
+          context: .
+          dockerfile: nginx/Dockerfile
+          tag_prefix: ghcr.io/rajarshigit2441139/base_images/nginx
+          push: "true"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        
+  git-tag:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Create Git Tag and Push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git fetch --tags
+
+          sanitized_version=$(echo "${{ needs.release.outputs.version }}" | sed 's/:.*//')
+          ci_build_no="${{ needs.release.outputs.ci_build_no }}"
+          tag_name="nginx-${sanitized_version}-${ci_build_no}"
+          tag_name_clean=$(echo "${tag_name}" | xargs)
+
+          if git rev-parse "refs/tags/${tag_name_clean}" >/dev/null 2>&1; then
+            echo "Tag '${tag_name_clean}' already exists. Skipping tag creation."
+          else
+            echo "Creating new tag '${tag_name_clean}'..."
+            git tag -a "${tag_name_clean}" -m "Release ${tag_name_clean}"
+            git push origin "${tag_name_clean}"
+            echo "Tag '${tag_name_clean}' pushed successfully."
+          fi
