@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
 
       - id: shared
-        uses: rajarshigit2441139/base_action/nginx_action@nginx_v1.0.1
+        uses: rajarshigit2441139/base_action/nginx_action@nginx_v1.0.2
         with:
           arch: ${{ matrix.arch }}
           context: .
@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v4
 
       - id: shared
-        uses: rajarshigit2441139/base_action/nginx_action@nginx_v1.0.1
+        uses: rajarshigit2441139/base_action/nginx_action@nginx_v1.0.2
         with:
           arch: ${{ matrix.arch }}
           context: .
