@@ -14,8 +14,8 @@ COPY --from=nginx-stage /etc/nginx /etc/nginx
 COPY --from=nginx-stage /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=nginx-stage /usr/share/nginx /usr/share/nginx
 COPY --from=nginx-stage /var/log/nginx /var/log/nginx
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-COPY docker-entrypoint.d/ /docker-entrypoint.d/
+COPY nginx/docker-entrypoint.sh /docker-entrypoint.sh
+COPY nginx/docker-entrypoint.d/ /docker-entrypoint.d/
 
 RUN chmod +x /docker-entrypoint.sh \
     && chmod +x /docker-entrypoint.d/*
