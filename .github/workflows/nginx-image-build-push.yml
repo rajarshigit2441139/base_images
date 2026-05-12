@@ -32,7 +32,7 @@ jobs:
         with:
           arch: ${{ matrix.arch }}
           context: nginx
-          dockerfile: Dockerfile
+          dockerfile: nginx/Dockerfile
           tag_prefix: ghcr.io/rajarshigit2441139/base_images/nginx
           push: "false"
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -57,7 +57,7 @@ jobs:
         with:
           arch: ${{ matrix.arch }}
           context: nginx
-          dockerfile: Dockerfile
+          dockerfile: nginx/Dockerfile
           tag_prefix: ghcr.io/rajarshigit2441139/base_images/nginx
           push: "true"
           github_token: ${{ secrets.GITHUB_TOKEN }}
