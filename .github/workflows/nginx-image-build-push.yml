@@ -31,8 +31,8 @@ jobs:
         uses: rajarshigit2441139/base_action/nginx_action@nginx_v1.0.2
         with:
           arch: ${{ matrix.arch }}
-          context: .
-          dockerfile: nginx/Dockerfile
+          context: nginx
+          dockerfile: Dockerfile
           tag_prefix: ghcr.io/rajarshigit2441139/base_images/nginx
           push: "false"
           github_token: ${{ secrets.GITHUB_TOKEN }}
