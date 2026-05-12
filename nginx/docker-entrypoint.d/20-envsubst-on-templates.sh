@@ -13,7 +13,7 @@ if [ -d "$TEMPLATE_DIR" ]; then
 
         echo "Generating nginx config: $filename"
 
-        envsubst \
+        envsubst '${BACKEND_URL}' \
             < "$template" \
             > "$OUTPUT_DIR/$filename"
     done
