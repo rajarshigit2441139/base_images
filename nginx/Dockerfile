@@ -14,9 +14,14 @@ COPY --from=nginx-stage /etc/nginx /etc/nginx
 COPY --from=nginx-stage /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=nginx-stage /usr/share/nginx /usr/share/nginx
 COPY --from=nginx-stage /var/log/nginx /var/log/nginx
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY docker-entrypoint.d/ /docker-entrypoint.d/
+
+RUN chmod +x /docker-entrypoint.sh \
+    && chmod +x /docker-entrypoint.d/*
 
 # Install necessary packages
-RUN apk add --no-cache pcre2
+RUN apk add --no-cache pcre2 gettext
 
 # Create necessary folder
 RUN mkdir -p /run/nginx
@@ -25,9 +30,6 @@ RUN mkdir -p /var/cache/nginx/client_temp
 # Remove default content (optional)
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy your custom nginx.conf
-# COPY nginx.conf /etc/nginx/nginx.conf
-
 # Create a non-root user and group for Nginx
 RUN addgroup -S nginx && adduser -S -G nginx nginx
 
@@ -35,8 +37,7 @@ RUN chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx
 USER nginx
 
 
-# Expose Nginx port
-# EXPOSE 8080
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 # Start nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]
