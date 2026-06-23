@@ -5,7 +5,7 @@ FROM node:18.16.0-alpine AS builder
 ARG TARGETARCH
 
 # Stage 2: Final image based on custom Alpine image
-FROM ghcr.io/rajarshigit2441139/base_images/alpine-3.22.0-${TARGETARCH}:26
+FROM ghcr.io/rajarshigit2441139/base_images/alpine-3.22.0-${TARGETARCH}:27
 
 # Add Necessary Library
 RUN apk add --no-cache libstdc++ libgcc gcompat
