@@ -1,8 +1,11 @@
 # Stage 1: Build stage with official Node.js Alpine image
 FROM node:18.16.0-alpine AS builder
 
+# Architecture passed from buildx
+ARG TARGETARCH
+
 # Stage 2: Final image based on custom Alpine image
-FROM ghcr.io/rajarshigit2441139/base_images/alpine-3.22.0-arm64:23
+FROM ghcr.io/rajarshigit2441139/base_images/alpine-3.22.0-${TARGETARCH}:26
 
 # Add Necessary Library
 RUN apk add --no-cache libstdc++ libgcc gcompat
