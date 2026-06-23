@@ -51,7 +51,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        arch: [arm64]
+        arch: [amd64, arm64]
     outputs:
       version: ${{ steps.shared.outputs.version }}
       ci_build_no: ${{ steps.shared.outputs.ci_build_no }}
