@@ -3,8 +3,11 @@ FROM nginx:1.29-alpine AS nginx-stage
 
 # Stage 2: Use your custom base image
 
+# Architecture passed from buildx
+ARG TARGETARCH
+
 # Use the Alpine base image for ARM64 architecture
-FROM ghcr.io/rajarshigit2441139/base_images/alpine-3.22.0-arm64:23
+FROM ghcr.io/rajarshigit2441139/base_images/alpine-3.22.0-${TARGETARCH}:27
 
 # Set Working DIR
 WORKDIR /usr/src/nginx
